@@ -1,0 +1,33 @@
+version: '2'
+services:
+  postgres:
+    container_name: oms-db
+    image: "postgres:9.6.0"
+    restart: "always"
+    volumes:
+      - "oms-db:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "username"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "oms-db"
+    mem_limit: "2g"
+  kafka:
+    container_name: oms-kafka
+    image: lensesio/fast-data-dev:2.5.0
+    environment:
+      SAMPLEDATA: 0
+      RUNTESTS: 0
+      ADV_HOST: 127.0.0.1
+      CONNECT_HEAP: 1G
+      CONNECTORS: elastic, jdbc
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    ports:
+      - "2181:2181"
+      - "9092:9092"
+      - "3030:3030"
+      - "8081-8083:8081-8083"
+      - "9581-9585:9581-9585"
+volumes:
+  oms-db:

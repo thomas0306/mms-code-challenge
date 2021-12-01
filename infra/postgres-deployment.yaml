@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: postgres
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: postgres
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: postgres
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              value: oms-db
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_USER
+              value: username
+          image: postgres:9.6.0
+          name: oms-db
+          ports:
+            - containerPort: 5432
+          resources:
+            limits:
+              memory: "2147483648"
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: oms-db
+      restartPolicy: Always
+      volumes:
+        - name: oms-db
+          persistentVolumeClaim:
+            claimName: oms-db
+status: {}
