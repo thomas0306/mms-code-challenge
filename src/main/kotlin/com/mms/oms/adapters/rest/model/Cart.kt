@@ -1,17 +1,17 @@
 package com.mms.oms.adapters.rest.model
 
-import com.mms.oms.config.DecimalAsStringSerializer
+import com.mms.oms.config.BigDecimalSerializer
 import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 
 @Serializable
 data class Cart(
     val currency: String,
-    @Serializable(with = DecimalAsStringSerializer::class)
+    @Serializable(with = BigDecimalSerializer::class)
     val totalPrice: BigDecimal,
-    @Serializable(with = DecimalAsStringSerializer::class)
+    @Serializable(with = BigDecimalSerializer::class)
     val discountedPrice: BigDecimal,
-    @Serializable(with = DecimalAsStringSerializer::class)
+    @Serializable(with = BigDecimalSerializer::class)
     val shippingPrice: BigDecimal,
 
     val items: List<Item> = listOf(),

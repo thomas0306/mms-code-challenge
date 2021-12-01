@@ -1,13 +1,13 @@
 package com.mms.oms.adapters.rest.model
 
-import com.mms.oms.config.DateAsStringSerializer
+import com.mms.oms.config.InstantSerializer
 import kotlinx.serialization.Serializable
-import java.util.Date
+import java.time.Instant
 
 @Serializable
 data class Order(
-    @Serializable(with = DateAsStringSerializer::class)
-    val orderDate: Date,
+    @Serializable(with = InstantSerializer::class)
+    val orderDate: Instant,
     val customerData: CustomerData,
     val cart: Cart,
 )

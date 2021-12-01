@@ -1,6 +1,8 @@
 package com.mms.oms.adapters.rest
 
 import com.mms.oms.adapters.rest.model.Order
+import com.mms.oms.domain.mapper.OrderMapper
+import com.mms.oms.domain.service.OrderService
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -21,7 +23,9 @@ fun Application.configureOrderRouting() {
         post("/order") {
             val order = call.receive<Order>()
             this@configureOrderRouting.log.info("Creating order [$order]")
-            call.respond(HttpStatusCode.OK, order)
+            val domainOrder = OrderMapper.toDomainOrder(order)
+            OrderService().createOrder(domainOrder)
+            call.respond(HttpStatusCode.OK, domainOrder)
         }
     }
 }
