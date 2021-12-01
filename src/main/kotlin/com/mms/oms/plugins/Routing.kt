@@ -1,4 +1,4 @@
-package oms.mms.plugins
+package com.mms.oms.plugins
 
 import io.ktor.application.Application
 import io.ktor.application.call

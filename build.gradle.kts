@@ -9,10 +9,10 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.6.0"
 }
 
-group = "oms.mms"
+group = "com.mms"
 version = "0.0.1"
 application {
-    mainClass.set("oms.mms.ApplicationKt")
+    mainClass.set("com.mms.oms.ApplicationKt")
 }
 
 repositories {
