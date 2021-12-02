@@ -27,7 +27,7 @@ fun Application.configureOrderRouting() {
             this@configureOrderRouting.log.info("Creating order [$order]")
             val domainOrder = OrderMapper.toDomainOrder(order)
             orderService.createOrder(domainOrder)
-            call.response.header(HttpHeaders.Location, "ORDER_ENDPOINT/${domainOrder.id}")
+            call.response.header(HttpHeaders.Location, "$ORDER_ENDPOINT/${domainOrder.id}")
             call.respond(HttpStatusCode.Accepted, domainOrder)
         }
     }

@@ -7,11 +7,10 @@ typealias DomainOrder = com.mms.oms.domain.model.Order
 
 object OrderMapper {
 
-    fun toDomainOrder(order: Order): DomainOrder {
-        return DomainOrder(
-            tenant = order.tenant,
-            status = Status.CREATED,
-            createdAt = order.orderDate,
-        )
-    }
+    fun toDomainOrder(order: Order) = DomainOrder(
+        tenant = order.tenant,
+        status = Status.CREATED,
+        createdAt = order.orderDate,
+        cart = CartMapper.toDomainCart(order.cart, order.orderDate)
+    )
 }
