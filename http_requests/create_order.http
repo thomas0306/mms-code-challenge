@@ -1,0 +1,38 @@
+POST http://localhost:8080/order
+Content-Type: application/json
+
+{
+  "customerData": {
+    "firstName": "Thomas",
+    "lastName": "Lee",
+    "phoneNumber": "+491711234123",
+    "emailAddress": "thomas.lee@gmail.com",
+    "addresses": [
+      {
+        "role": [
+          "DELIVERY"
+        ],
+        "street": "Adlerstr.",
+        "streetNumber": "1",
+        "zipCode": "81827",
+        "city": "Munich",
+        "country": "Germany"
+      }
+    ]
+  },
+  "cart": {
+    "currency": "EUR",
+    "totalPrice": 200.00,
+    "discountedPrice": 180.00,
+    "shippingPrice": 5.99,
+    "items": [
+      {
+        "itemId": "BK1250",
+        "unitPrice": 20.00,
+        "quantity": 10
+      }
+    ]
+  },
+  "orderDate": "2021-12-01T20:16:00.000Z",
+  "tenant": "DE"
+}

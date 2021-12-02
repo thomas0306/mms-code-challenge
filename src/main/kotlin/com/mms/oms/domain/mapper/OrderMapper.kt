@@ -9,6 +9,7 @@ object OrderMapper {
 
     fun toDomainOrder(order: Order): DomainOrder {
         return DomainOrder(
+            tenant = order.tenant,
             status = Status.CREATED,
             createdAt = order.orderDate,
         )

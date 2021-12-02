@@ -10,4 +10,5 @@ data class Order(
     val orderDate: Instant,
     val customerData: CustomerData,
     val cart: Cart,
+    val tenant: String,
 )

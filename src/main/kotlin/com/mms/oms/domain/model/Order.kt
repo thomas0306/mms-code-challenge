@@ -10,6 +10,7 @@ import java.util.UUID
 data class Order(
     @Serializable(with = UUIDSerializer::class)
     val id: UUID = UUID.randomUUID(),
+    val tenant: String,
     val status: Status,
     @Serializable(with = InstantSerializer::class)
     val createdAt: Instant,

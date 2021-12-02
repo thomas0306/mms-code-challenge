@@ -7,6 +7,7 @@ import java.util.UUID
 
 object Orders : IdTable<UUID>("order") {
     override val id = uuid("id").entityId()
+    val tenant = char("tenant", 2)
     val status = varchar("status", 30)
     val createdAt = timestamp("created_at")
     val updatedAt = timestamp("updated_at").clientDefault { Instant.now() }
