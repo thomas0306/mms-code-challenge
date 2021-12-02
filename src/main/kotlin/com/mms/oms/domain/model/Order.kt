@@ -1,7 +1,7 @@
 package com.mms.oms.domain.model
 
-import com.mms.oms.config.InstantSerializer
-import com.mms.oms.config.UUIDSerializer
+import com.mms.oms.config.serialization.InstantSerializer
+import com.mms.oms.config.serialization.UUIDSerializer
 import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.util.UUID

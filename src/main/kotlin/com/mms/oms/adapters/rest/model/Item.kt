@@ -1,6 +1,6 @@
 package com.mms.oms.adapters.rest.model
 
-import com.mms.oms.config.BigDecimalSerializer
+import com.mms.oms.config.serialization.BigDecimalSerializer
 import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 

@@ -1,4 +1,4 @@
-package com.mms.oms.config
+package com.mms.oms.config.serialization
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

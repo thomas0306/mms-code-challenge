@@ -1,4 +1,4 @@
-package com.mms.oms.plugins
+package com.mms.oms.config.serialization
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.Application

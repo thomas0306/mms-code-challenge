@@ -4,6 +4,7 @@ val logback_version: String by project
 val prometeus_version: String by project
 
 val expose_version = "0.36.2"
+val koin_version = "2.1.0"
 
 plugins {
     application
@@ -28,6 +29,7 @@ application {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -43,6 +45,12 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+
+    // Koin DI
+    implementation("org.koin:koin-core:$koin_version")
+    implementation("org.koin:koin-ktor:$koin_version")
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+    testImplementation("org.koin:koin-test:$koin_version")
 
     // Database dependencies
     implementation("org.jetbrains.exposed:exposed-core:$expose_version")

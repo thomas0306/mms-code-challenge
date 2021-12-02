@@ -1,6 +1,6 @@
 package com.mms.oms.adapters.rest.model
 
-import com.mms.oms.config.InstantSerializer
+import com.mms.oms.config.serialization.InstantSerializer
 import kotlinx.serialization.Serializable
 import java.time.Instant
 
