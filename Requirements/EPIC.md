@@ -8,8 +8,8 @@ This scenario is meant to test your every capability in programming modern day a
 ### Functional Requirements
 - An order has 4 regular states: Created, Paid, In Fulfillment, and Closed.
 - Created 
-  - it is triggered by a REST endpoint which accepts a basket of items of your choice.
-  - This creation process should ensure same requirements for an order to be accepted.
+  - it is triggered by a REST endpoint which accepts a basket of items of your choice. // done
+  - This creation process should ensure same requirements for an order to be accepted. (Validation???)
 - Paid
   - a REST endpoint which confirms the order as paid. 
 - In fulfillment
@@ -20,7 +20,8 @@ This scenario is meant to test your every capability in programming modern day a
 ### Non-functional Requirements
 
 - The whole application should be structured in the form of state machines. 
-- Every aspect of the application shall be 100% parallelizable, idempotent and tested.
+- Every aspect of the application shall be 100% parallelizable, idempotent and 
+- Unit tested.
 - Rules to programming style apply as usual and documentation shall be down to a minimum. 
 - It should be possible to crash your application at any point in time and to continue processing after restart.
 - Kotlin Programming Language. 
@@ -38,4 +39,6 @@ This scenario is meant to test your every capability in programming modern day a
 
 ### Nice to have
 - DLQs
+- Retries
+- config by environment
 - Monitoring metrics
