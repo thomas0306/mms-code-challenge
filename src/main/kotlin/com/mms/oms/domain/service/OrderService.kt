@@ -4,5 +4,6 @@ import com.mms.oms.domain.model.Order
 
 interface OrderService {
     suspend fun createOrder(order: Order)
+    suspend fun persistOrder(order: Order)
 }
 

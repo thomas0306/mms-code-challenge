@@ -4,7 +4,7 @@ val logback_version: String by project
 val prometeus_version: String by project
 
 val expose_version = "0.36.2"
-val koin_version = "2.1.0"
+val koin_version = "3.1.4"
 
 plugins {
     application
@@ -29,7 +29,6 @@ application {
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
@@ -47,10 +46,10 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
     // Koin DI
-    implementation("org.koin:koin-core:$koin_version")
-    implementation("org.koin:koin-ktor:$koin_version")
-    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
-    testImplementation("org.koin:koin-test:$koin_version")
+    implementation("io.insert-koin:koin-core:$koin_version")
+    implementation("io.insert-koin:koin-ktor:$koin_version")
+    implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
+    testImplementation("io.insert-koin:koin-test:$koin_version")
 
     // Database dependencies
     implementation("org.jetbrains.exposed:exposed-core:$expose_version")
@@ -60,4 +59,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:2.7.8")
     implementation("org.postgresql:postgresql:42.2.2")
     implementation("org.flywaydb:flyway-core:5.2.4")
+
+    // Kafka
+    implementation("org.apache.kafka:kafka-clients:3.0.0")
 }
