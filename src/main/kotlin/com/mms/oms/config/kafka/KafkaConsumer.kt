@@ -50,7 +50,7 @@ class Consumer<K, V>(
                 runBlocking(dispatcher) {
                     records.map {
                         launch {
-                            logger.info("topic = ${it.topic()}, partition = ${it.partition()}, offset = ${it.offset()}, key = ${it.key()}, value = ${it.value()}")
+                            logger.debug("topic = ${it.topic()}, partition = ${it.partition()}, offset = ${it.offset()}, key = ${it.key()}, value = ${it.value()}")
                             processor.process(it)
                         }
                     }.joinAll()
@@ -61,7 +61,7 @@ class Consumer<K, V>(
                         if (exception != null) {
                             logger.error("Commit failed for offsets $offsets", exception)
                         } else {
-                            logger.info("Offset committed  $offsets")
+                            logger.debug("Offset committed  $offsets")
                         }
                     }
                 }
@@ -93,7 +93,8 @@ class Consumer<K, V>(
 fun <K, V> buildConsumer(
     environment: ApplicationEnvironment,
     topic: String,
-    processor: KafkaProcessor<K, V>
+    processor: KafkaProcessor<K, V>,
+    parallelism: Int
 ): Consumer<K, V> {
     val consumerConfig = environment.config.config("ktor.kafka")
     val consumerProps = Properties().apply {
@@ -103,5 +104,5 @@ fun <K, V> buildConsumer(
         this[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("key.deserializer").getString()
         this[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("value.deserializer").getString()
     }
-    return Consumer(KafkaConsumer(consumerProps), topic, processor, 4)
+    return Consumer(KafkaConsumer(consumerProps), topic, processor, parallelism)
 }

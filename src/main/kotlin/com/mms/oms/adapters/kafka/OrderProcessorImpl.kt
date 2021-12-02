@@ -15,8 +15,9 @@ class OrderProcessorImpl : KafkaProcessor<String, String>, KoinComponent {
     private val orderService: OrderService by inject()
 
     override suspend fun process(record: ConsumerRecord<String, String>) {
-        logger.info("Processing ${record.key()}...")
+        logger.info("Processing order [${record.key()}]")
         val order = Json.decodeFromString<Order>(record.value())
         orderService.persistOrder(order)
+        logger.info("Processed order [${record.key()}]")
     }
 }

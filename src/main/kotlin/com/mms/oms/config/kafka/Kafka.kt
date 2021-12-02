@@ -10,11 +10,12 @@ import org.koin.ktor.ext.inject
 fun Application.configureKafka() {
     val orderProcessor: OrderProcessorImpl by inject()
     install(BackgroundJob.BackgroundJobFeature) {
-        name = "kafka-consumer"
+        name = "order-event-consumer"
         job = buildConsumer<String, String>(
             environment,
             "order-event",
-            orderProcessor
+            orderProcessor,
+            4
         )
     }
 }
