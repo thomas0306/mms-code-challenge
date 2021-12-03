@@ -16,10 +16,15 @@ fun Application.module(testing: Boolean = false) {
     configureDependencyInjection()
     configureSerialization()
     configureMonitoring()
-    configureDatabase()
+    if (testing) {
+        // configureInMemoryDatabase()
+        // configureInMemoryKafka()
+    } else {
+        configureDatabase()
+        configureKafka()
+    }
 
     // Functional
-    configureKafka()
     configureOrderRouting()
     configurePaymentRouting()
 }

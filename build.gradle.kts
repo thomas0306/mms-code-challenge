@@ -62,4 +62,7 @@ dependencies {
 
     // Kafka
     implementation("org.apache.kafka:kafka-clients:3.0.0")
+
+    // Testing
+    testImplementation("org.assertj:assertj-core:3.21.0")
 }
