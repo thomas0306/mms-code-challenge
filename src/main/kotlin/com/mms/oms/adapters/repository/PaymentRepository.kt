@@ -13,7 +13,7 @@ object PaymentRepository : IdTable<UUID>("payment") {
     val status = enumerationByName("status", 30, PaymentStatus::class)
     val currency = char("currency", 3)
     val amount = float("amount")
-    val orderId = uuid("order_id").uniqueIndex().references(OrderRepository.id)
+    val orderId = uuid("order_id")
     val createdAt = timestamp("created_at")
     val updatedAt = timestamp("updated_at").clientDefault { Instant.now() }
 }

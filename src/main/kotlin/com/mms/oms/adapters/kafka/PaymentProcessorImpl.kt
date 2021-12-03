@@ -13,11 +13,12 @@ import org.slf4j.LoggerFactory
 class PaymentProcessorImpl : KafkaProcessor<String, String>, KoinComponent {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val paymentService: PaymentService by inject()
-    private val paymentProducer: PaymentProducer by inject()
+    private val paymentProducer: PaymentProducerImpl by inject()
 
     override suspend fun process(record: ConsumerRecord<String, String>) {
-        logger.info("Processing payment [${record.key()}]")
+        logger.info("Processing payment for order [${record.key()}]")
         val payment = Json.decodeFromString<Payment>(record.value())
+        logger.info("Processing payment [${payment.id}]")
         paymentService.processPayment(payment)
         logger.info("Processed payment [${payment.id}]")
     }

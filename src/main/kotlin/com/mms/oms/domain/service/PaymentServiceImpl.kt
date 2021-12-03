@@ -1,7 +1,7 @@
 package com.mms.oms.domain.service
 
-import com.mms.oms.adapters.kafka.OrderProducer
-import com.mms.oms.adapters.kafka.PaymentProducer
+import com.mms.oms.adapters.kafka.OrderProducerImpl
+import com.mms.oms.adapters.kafka.PaymentProducerImpl
 import com.mms.oms.adapters.repository.CartRepository
 import com.mms.oms.adapters.repository.OrderRepository
 import com.mms.oms.adapters.repository.PaymentRepository
@@ -20,9 +20,8 @@ import java.util.UUID
 
 class PaymentServiceImpl : PaymentService, KoinComponent {
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val paymentProducer: PaymentProducer by inject()
-    private val orderService: OrderService by inject()
-    private val orderProducer: OrderProducer by inject()
+    private val paymentProducer: PaymentProducerImpl by inject()
+    private val orderProducer: OrderProducerImpl by inject()
 
     override suspend fun submitPayment(payment: Payment) {
         paymentProducer.produce(payment)
@@ -41,29 +40,32 @@ class PaymentServiceImpl : PaymentService, KoinComponent {
             it[orderId] = payment.orderId
         }
 
-        CartRepository.select {
-            CartRepository.orderId eq payment.orderId
-        }.singleOrNull()?.let {
-            performPostActions(
-                payment.orderId,
-                it[CartRepository.totalPrice]
-            )
-        }
+        maybeConcludesPayment(payment.orderId)
 
         return@newSuspendedTransaction
     }
 
-    private suspend fun performPostActions(orderId: UUID, orderTotalPrice: Float) {
-        val authorizedSum = getAuthorizedSum(orderId)
-        val isFullAmountAuthorized = authorizedSum >= orderTotalPrice
-        if (isFullAmountAuthorized) {
-            logger.debug(
-                "Order [$orderId] is fully authorized, " +
-                    "total price [$orderTotalPrice] " +
-                    "and authorized sum [$authorizedSum]"
-            )
-            markOrderAsPaidAndAuthorized(orderId)
-        }
+    override suspend fun maybeConcludesPayment(orderId: UUID) {
+        CartRepository.select {
+            CartRepository.orderId eq orderId
+        }.singleOrNull()?.let {
+            val orderTotalPrice = it[CartRepository.totalPrice]
+            val authorizedSum = getAuthorizedSum(orderId)
+            val isFullAmountAuthorized = authorizedSum >= orderTotalPrice
+            if (isFullAmountAuthorized) {
+                logger.debug(
+                    "Order [$orderId] is fully authorized, " +
+                        "total price [$orderTotalPrice] " +
+                        "and authorized sum [$authorizedSum]"
+                )
+                markOrderAsPaidAndAuthorized(orderId)
+            } else {
+                val diff = orderTotalPrice - authorizedSum
+                logger.debug(
+                    "There is outstanding amount [$diff] for order [$orderId]"
+                )
+            }
+        } ?: logger.debug("Order [$orderId] is not captured, will process once received")
     }
 
     private suspend fun markOrderAsPaidAndAuthorized(

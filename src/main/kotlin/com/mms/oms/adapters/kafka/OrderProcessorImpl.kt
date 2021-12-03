@@ -2,8 +2,12 @@ package com.mms.oms.adapters.kafka
 
 import com.mms.oms.config.kafka.KafkaProcessor
 import com.mms.oms.domain.model.Order
-import com.mms.oms.domain.model.OrderStatus
+import com.mms.oms.domain.model.OrderStatus.CLOSED
+import com.mms.oms.domain.model.OrderStatus.CREATED
+import com.mms.oms.domain.model.OrderStatus.IN_FULFILLMENT
+import com.mms.oms.domain.model.OrderStatus.PAID
 import com.mms.oms.domain.service.OrderService
+import com.mms.oms.domain.service.ShipmentService
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -14,17 +18,19 @@ import org.slf4j.LoggerFactory
 class OrderProcessorImpl : KafkaProcessor<String, String>, KoinComponent {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val orderService: OrderService by inject()
-    private val orderProducer: OrderProducer by inject()
+    private val orderProducer: OrderProducerImpl by inject()
+    private val shipmentService: ShipmentService by inject()
 
     override suspend fun process(record: ConsumerRecord<String, String>) {
         logger.info("Processing order [${record.key()}]")
         val order = Json.decodeFromString<Order>(record.value())
         when (order.status) {
-            OrderStatus.CREATED -> orderService.persistOrder(order)
-            OrderStatus.PAID -> {
+            CREATED -> orderService.persistOrder(order)
+            PAID -> {
                 orderService.updateOrder(order)
-//                shipmentService.scheduleFulfillment(order)
+                shipmentService.createShipment(order)
             }
+            IN_FULFILLMENT, CLOSED -> orderService.updateOrder(order)
         }
 
         logger.info("Processed order [${record.key()}]")

@@ -48,7 +48,7 @@ Content-Type: application/json
 
 {
   "transactionId": "payment-transaction-id",
-  "merchantReference": "9a26290e-96bc-41cf-9bcb-5bd4c848a7d9",
+  "merchantReference": "{{order_id}}",
   "pspReference": "psp-reference",
   "eventCode": "AUTHORISATION",
   "currency": "EUR",

@@ -1,27 +1,28 @@
 package com.mms.oms.domain.service
 
-import com.mms.oms.adapters.kafka.OrderProducer
+import com.mms.oms.adapters.kafka.OrderProducerImpl
 import com.mms.oms.adapters.repository.CartRepository
 import com.mms.oms.adapters.repository.ItemRepository
 import com.mms.oms.adapters.repository.OrderRepository
 import com.mms.oms.domain.model.Order
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.Instant
+import java.util.UUID
 
 class OrderServiceImpl : OrderService, KoinComponent {
 
-    private val orderProducer: OrderProducer by inject()
+    private val orderProducer: OrderProducerImpl by inject()
+    private val paymentService: PaymentService by inject()
 
     override suspend fun submitOrder(order: Order) {
         orderProducer.produce(order)
     }
 
-    override suspend fun persistOrder(order: Order) = transaction {
+    override suspend fun persistOrder(order: Order) = newSuspendedTransaction {
         OrderRepository.insert {
             it[id] = order.id
             it[tenant] = order.tenant
@@ -56,7 +57,9 @@ class OrderServiceImpl : OrderService, KoinComponent {
             }
         }
 
-        return@transaction
+        paymentService.maybeConcludesPayment(order.id)
+
+        return@newSuspendedTransaction
     }
 
     override suspend fun updateOrder(
@@ -75,5 +78,9 @@ class OrderServiceImpl : OrderService, KoinComponent {
         }
 
         return@newSuspendedTransaction
+    }
+
+    override suspend fun maybeCloseOrder(orderId: UUID) {
+        TODO("maybeCloseOrder not yet implemented")
     }
 }
