@@ -5,6 +5,7 @@ import io.ktor.application.ApplicationFeature
 import io.ktor.util.AttributeKey
 import org.slf4j.LoggerFactory
 import java.io.Closeable
+import java.util.UUID
 import kotlin.concurrent.thread
 
 class BackgroundJob(configuration: JobConfiguration) : Closeable {
@@ -17,8 +18,8 @@ class BackgroundJob(configuration: JobConfiguration) : Closeable {
         var job: ClosableJob? = null
     }
 
-    object BackgroundJobFeature : ApplicationFeature<Application, JobConfiguration, BackgroundJob> {
-        override val key: AttributeKey<BackgroundJob> = AttributeKey("BackgroundJob")
+    class BackgroundJobFeature : ApplicationFeature<Application, JobConfiguration, BackgroundJob> {
+        override val key: AttributeKey<BackgroundJob> = AttributeKey("BackgroundJob-${UUID.randomUUID()}")
 
         override fun install(pipeline: Application, configure: JobConfiguration.() -> Unit): BackgroundJob {
             val configuration = JobConfiguration().apply(configure)

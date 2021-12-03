@@ -36,3 +36,18 @@ Content-Type: application/json
   "orderDate": "2021-12-02T20:16:00.000Z",
   "tenant": "DE"
 }
+
+###
+
+POST http://localhost:8080/payment
+Content-Type: application/json
+
+{
+  "transactionId": "payment-transaction-id",
+  "merchantReference": "2a000b63-edf9-4ea2-b4a4-e4fe39a90f32",
+  "pspReference": "psp-reference",
+  "eventCode": "AUTHORISATION",
+  "currency": "EUR",
+  "amount": 200.00,
+  "createdAt": "2021-12-02T20:16:00.000Z"
+}

@@ -101,7 +101,7 @@ fun <K, V> buildConsumer(
     val consumerConfig = environment.config.config("ktor.kafka")
     val consumerProps = Properties().apply {
         this[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = consumerConfig.property("bootstrap.servers").getList()
-        this[ConsumerConfig.CLIENT_ID_CONFIG] = consumerConfig.property("client.id").getString()
+        this[ConsumerConfig.CLIENT_ID_CONFIG] = "${consumerConfig.property("client.id").getString()}-$topic-client"
         this[ConsumerConfig.GROUP_ID_CONFIG] = consumerConfig.property("group.id").getString()
         this[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("key.deserializer").getString()
         this[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = consumerConfig.property("value.deserializer").getString()

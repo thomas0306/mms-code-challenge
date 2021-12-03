@@ -14,7 +14,7 @@ class OrderServiceImpl : OrderService, KoinComponent {
 
     private val orderProducer: OrderProducer by inject()
 
-    override suspend fun createOrder(order: Order) {
+    override suspend fun submitOrder(order: Order) {
         orderProducer.produce(order)
     }
 
@@ -22,6 +22,7 @@ class OrderServiceImpl : OrderService, KoinComponent {
         OrderRepository.insert {
             it[OrderRepository.id] = order.id
             it[OrderRepository.status] = order.status
+            it[OrderRepository.paymentStatus] = order.paymentStatus
             it[OrderRepository.createdAt] = order.createdAt
             it[OrderRepository.updatedAt] = order.updatedAt
         }
