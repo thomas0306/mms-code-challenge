@@ -13,11 +13,17 @@ import org.slf4j.LoggerFactory
 class OrderProcessorImpl : KafkaProcessor<String, String>, KoinComponent {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val orderService: OrderService by inject()
+    private val orderProducer: OrderProducer by inject()
 
     override suspend fun process(record: ConsumerRecord<String, String>) {
         logger.info("Processing order [${record.key()}]")
         val order = Json.decodeFromString<Order>(record.value())
         orderService.persistOrder(order)
         logger.info("Processed order [${record.key()}]")
+    }
+
+    override suspend fun recover(record: ConsumerRecord<String, String>) {
+        val order = Json.decodeFromString<Order>(record.value())
+        orderProducer.produceDLT(order)
     }
 }

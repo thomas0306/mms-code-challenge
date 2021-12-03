@@ -1,5 +1,6 @@
 package com.mms.oms.config.kafka
 
+import com.mms.oms.config.retry.Retry.withRetry
 import io.ktor.application.ApplicationEnvironment
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -42,43 +43,44 @@ class Consumer<K, V>(
             .asCoroutineDispatcher()
     }
 
-    override fun run() {
-        try {
-            while (!closed.get()) {
-                val records = consumer.poll(Duration.of(1000, ChronoUnit.MILLIS))
+    override fun run() = try {
+        while (!closed.get()) {
+            val records = consumer.poll(Duration.of(1000, ChronoUnit.MILLIS))
 
-                runBlocking(dispatcher) {
-                    records.map {
-                        launch {
-                            logger.debug("topic = ${it.topic()}, partition = ${it.partition()}, offset = ${it.offset()}, key = ${it.key()}, value = ${it.value()}")
-                            processor.process(it)
-                        }
-                    }.joinAll()
-                }
+            runBlocking(dispatcher) {
+                records.map {
+                    launch {
+                        logger.debug("topic = ${it.topic()}, partition = ${it.partition()}, offset = ${it.offset()}, key = ${it.key()}, value = ${it.value()}")
 
-                if (!records.isEmpty) {
-                    consumer.commitAsync { offsets, exception ->
-                        if (exception != null) {
-                            logger.error("Commit failed for offsets $offsets", exception)
-                        } else {
-                            logger.debug("Offset committed  $offsets")
+                        processor.run {
+                            withRetry(recover = { recover(it) }) { process(it) }
                         }
+                    }
+                }.joinAll()
+            }
+
+            if (!records.isEmpty) {
+                consumer.commitAsync { offsets, exception ->
+                    if (exception != null) {
+                        logger.error("Commit failed for offsets $offsets", exception)
+                    } else {
+                        logger.debug("Offset committed  $offsets")
                     }
                 }
             }
-            logger.info("Finish consuming")
-        } catch (e: Throwable) {
-            when (e) {
-                is WakeupException -> logger.info("Consumer waked up")
-                else -> logger.error("Polling failed", e)
-            }
-        } finally {
-            logger.info("Commit offset synchronously")
-            consumer.commitSync()
-            consumer.close()
-            finished.countDown()
-            logger.info("Consumer successfully closed")
         }
+        logger.info("Finish consuming")
+    } catch (e: Throwable) {
+        when (e) {
+            is WakeupException -> logger.info("Consumer waked up")
+            else -> logger.error("Polling failed", e)
+        }
+    } finally {
+        logger.info("Commit offset synchronously")
+        consumer.commitSync()
+        consumer.close()
+        finished.countDown()
+        logger.info("Consumer successfully closed")
     }
 
     override fun close() {

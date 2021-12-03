@@ -22,4 +22,14 @@ class OrderProducer : KoinComponent {
         logger.info("Producing order event [${order.id}], status [${order.status}]")
         kafkaProducer.send(orderRecord)
     }
+
+    fun produceDLT(order: Order) {
+        val orderRecord = ProducerRecord(
+            "order-event-dlt",
+            order.id.toString(),
+            Json.encodeToString(order)
+        )
+        logger.info("Producing order DLT event [${order.id}], status [${order.status}]")
+        kafkaProducer.send(orderRecord)
+    }
 }
