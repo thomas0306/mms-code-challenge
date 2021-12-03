@@ -2,6 +2,7 @@ package com.mms.oms.adapters.kafka
 
 import com.mms.oms.config.kafka.KafkaProcessor
 import com.mms.oms.domain.model.Order
+import com.mms.oms.domain.model.OrderStatus
 import com.mms.oms.domain.service.OrderService
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -18,7 +19,14 @@ class OrderProcessorImpl : KafkaProcessor<String, String>, KoinComponent {
     override suspend fun process(record: ConsumerRecord<String, String>) {
         logger.info("Processing order [${record.key()}]")
         val order = Json.decodeFromString<Order>(record.value())
-        orderService.persistOrder(order)
+        when (order.status) {
+            OrderStatus.CREATED -> orderService.persistOrder(order)
+            OrderStatus.PAID -> {
+                orderService.updateOrder(order)
+//                shipmentService.scheduleFulfillment(order)
+            }
+        }
+
         logger.info("Processed order [${record.key()}]")
     }
 

@@ -27,7 +27,9 @@ object Retry {
                 exceptionCaught = e
                 if (isAlwaysRetry || e::class in onExceptions) {
                     logger.debug("Attempt [${it + 1}/$maxAttempt] failed, proceed to retry")
-                    delay(backoffPolicy.backoff(it.toLong()))
+                    if ((it + 1) < maxAttempt) {
+                        delay(backoffPolicy.backoff(it.toLong()))
+                    }
                 } else {
                     if (recover != null) {
                         logger.error("${e::class.simpleName} exempted from retry, attempt recovery", e)

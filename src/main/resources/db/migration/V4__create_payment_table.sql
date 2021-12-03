@@ -1,5 +1,5 @@
 ALTER TABLE "order"
-    ADD COLUMN payment_status CHAR(30);
+    ADD COLUMN payment_status VARCHAR(30);
 
 CREATE TABLE payment (
      id UUID PRIMARY KEY,

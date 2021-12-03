@@ -17,5 +17,5 @@ data class Order(
     val tenant: String,
     val status: OrderStatus,
     val paymentStatus: PaymentStatus,
-    val cart: Cart,
+    val cart: Cart?,
 )

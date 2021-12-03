@@ -37,6 +37,10 @@ Content-Type: application/json
   "tenant": "DE"
 }
 
+> {%
+ client.global.set("order_id", response.body.id)
+%}
+
 ###
 
 POST http://localhost:8080/payment
@@ -44,7 +48,7 @@ Content-Type: application/json
 
 {
   "transactionId": "payment-transaction-id",
-  "merchantReference": "2a000b63-edf9-4ea2-b4a4-e4fe39a90f32",
+  "merchantReference": "9a26290e-96bc-41cf-9bcb-5bd4c848a7d9",
   "pspReference": "psp-reference",
   "eventCode": "AUTHORISATION",
   "currency": "EUR",
