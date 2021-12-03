@@ -98,7 +98,7 @@ fun <K, V> buildConsumer(
     processor: KafkaProcessor<K, V>,
     parallelism: Int
 ): Consumer<K, V> {
-    val consumerConfig = environment.config.config("ktor.kafka")
+    val consumerConfig = environment.config.config("kafka")
     val consumerProps = Properties().apply {
         this[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = consumerConfig.property("bootstrap.servers").getList()
         this[ConsumerConfig.CLIENT_ID_CONFIG] = "${consumerConfig.property("client.id").getString()}-$topic-client"

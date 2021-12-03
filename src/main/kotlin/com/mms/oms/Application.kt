@@ -2,7 +2,7 @@ package com.mms.oms
 
 import com.mms.oms.adapters.rest.configureOrderRouting
 import com.mms.oms.adapters.rest.configurePaymentRouting
-import com.mms.oms.config.DatabaseFactory
+import com.mms.oms.config.configureDatabase
 import com.mms.oms.config.configureDependencyInjection
 import com.mms.oms.config.kafka.configureKafka
 import com.mms.oms.config.serialization.configureSerialization
@@ -16,11 +16,10 @@ fun Application.module(testing: Boolean = false) {
     configureDependencyInjection()
     configureSerialization()
     configureMonitoring()
-    DatabaseFactory.init()
+    configureDatabase()
 
     // Functional
     configureKafka()
     configureOrderRouting()
     configurePaymentRouting()
-
 }
