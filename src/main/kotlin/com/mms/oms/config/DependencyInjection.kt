@@ -23,27 +23,29 @@ import org.koin.ktor.ext.Koin
 
 fun Application.configureDependencyInjection() {
 
-    val appModules = module {
-        // Kafka
+    val kafkaModules = module {
         single { buildProducer<String, String>(environment) as KafkaProducer<String, String> }
+    }
 
-        // Order
+    val orderModules = module(createdAtStart = true) {
         single<OrderService> { OrderServiceImpl() }
         single<KafkaProcessor<String, String>>(named("order-processor")) { OrderProcessorImpl() }
         single { OrderProducerImpl() }
+    }
 
-        // Payment
+    val paymentModules = module(createdAtStart = true) {
         single<PaymentService> { PaymentServiceImpl() }
         single<KafkaProcessor<String, String>>(named("payment-processor")) { PaymentProcessorImpl() }
         single { PaymentProducerImpl() }
+    }
 
-        // Shipment
+    val shipmentModules = module(createdAtStart = true) {
         single<ShipmentService> { ShipmentServiceImpl() }
         single<KafkaProcessor<String, String>>(named("shipment-processor")) { ShipmentProcessorImpl() }
         single { ShipmentProducerImpl() }
     }
 
     install(Koin) {
-        modules(appModules)
+        modules(kafkaModules, orderModules, paymentModules, shipmentModules)
     }
 }

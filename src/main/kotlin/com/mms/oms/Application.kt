@@ -16,13 +16,8 @@ fun Application.module(testing: Boolean = false) {
     configureDependencyInjection()
     configureSerialization()
     configureMonitoring()
-    if (testing) {
-        // configureInMemoryDatabase()
-        // configureInMemoryKafka()
-    } else {
-        configureDatabase()
-        configureKafka()
-    }
+    configureDatabase()
+    configureKafka()
 
     // Functional
     configureOrderRouting()

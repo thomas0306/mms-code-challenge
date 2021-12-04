@@ -7,13 +7,12 @@ import com.mms.oms.adapters.rest.model.Cart
 import com.mms.oms.adapters.rest.model.CustomerData
 import com.mms.oms.adapters.rest.model.Item
 import com.mms.oms.adapters.rest.model.Order
-import com.mms.oms.module
+import com.mms.oms.support.BaseTest
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
-import io.ktor.server.testing.withTestApplication
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.assertj.core.api.Assertions.assertThat
@@ -21,7 +20,7 @@ import java.math.BigDecimal
 import java.time.Instant
 import kotlin.test.Test
 
-class OrderRoutingTest {
+class OrderRoutingTest : BaseTest() {
     private fun completeOrder() = Order(
         orderDate = Instant.now(),
         tenant = "DE",
@@ -58,9 +57,7 @@ class OrderRoutingTest {
 
     @Test
     fun testPostOrder() {
-        withTestApplication({
-            module(testing = true)
-        }) {
+        with(engine) {
             handleRequest(HttpMethod.Post, "/order") {
                 addHeader(HttpHeaders.ContentType, "application/json")
                 setBody(Json.encodeToString(completeOrder()))

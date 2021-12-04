@@ -11,7 +11,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 fun <K, V> buildProducer(environment: ApplicationEnvironment): KafkaProducer<K, V> {
-    val producerConfig = environment.config.config("ktor.kafka")
+    val producerConfig = environment.config.config("kafka")
     val producerProps = Properties().apply {
         this[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = producerConfig.property("bootstrap.servers").getList()
         this[ProducerConfig.CLIENT_ID_CONFIG] = producerConfig.property("client.id").getString()

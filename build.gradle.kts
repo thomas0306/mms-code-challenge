@@ -59,10 +59,14 @@ dependencies {
     implementation("com.zaxxer:HikariCP:2.7.8")
     implementation("org.postgresql:postgresql:42.2.2")
     implementation("org.flywaydb:flyway-core:5.2.4")
+    testImplementation("com.opentable.components:otj-pg-embedded:0.13.4")
 
     // Kafka
-    implementation("org.apache.kafka:kafka-clients:3.0.0")
+    implementation("org.apache.kafka:kafka-clients:2.8.1")
+    testImplementation("com.consol.citrus:citrus-kafka:3.1.0")
 
     // Testing
     testImplementation("org.assertj:assertj-core:3.21.0")
+    testImplementation("io.mockk:mockk:1.12.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 }
