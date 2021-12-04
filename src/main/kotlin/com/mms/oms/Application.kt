@@ -9,10 +9,11 @@ import com.mms.oms.config.kafka.configureKafka
 import com.mms.oms.config.serialization.configureSerialization
 import com.mms.oms.plugins.configureMonitoring
 import io.ktor.application.Application
+import kotlinx.coroutines.runBlocking
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-fun Application.module(testing: Boolean = false) {
+fun Application.module() = runBlocking {
     // Technical
     configureDependencyInjection()
     configureSerialization()

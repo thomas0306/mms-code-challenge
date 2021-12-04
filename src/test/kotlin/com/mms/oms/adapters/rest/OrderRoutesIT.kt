@@ -7,7 +7,7 @@ import com.mms.oms.adapters.rest.model.Cart
 import com.mms.oms.adapters.rest.model.CustomerData
 import com.mms.oms.adapters.rest.model.Item
 import com.mms.oms.adapters.rest.model.Order
-import com.mms.oms.support.TestBase
+import com.mms.oms.support.IntegrationTestBase
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -20,7 +20,32 @@ import java.math.BigDecimal
 import java.time.Instant
 import kotlin.test.Test
 
-class OrderRoutingTest : TestBase() {
+class OrderRoutesIT : IntegrationTestBase() {
+
+    @Test
+    fun `should accepts order`() {
+        with(engine) {
+            handleRequest(HttpMethod.Post, ORDER_ENDPOINT) {
+                addHeader(HttpHeaders.ContentType, "application/json")
+                setBody(Json.encodeToString(completeOrder()))
+            }.apply {
+                assertThat(response.status()).isEqualTo(HttpStatusCode.Accepted)
+            }
+        }
+    }
+
+    @Test
+    fun `should not process if request body in-complete`() {
+        with(engine) {
+            handleRequest(HttpMethod.Post, ORDER_ENDPOINT) {
+                addHeader(HttpHeaders.ContentType, "application/json")
+                setBody("{}")
+            }.apply {
+                assertThat(response.status()).isEqualTo(HttpStatusCode.BadRequest)
+            }
+        }
+    }
+
     private fun completeOrder() = Order(
         orderDate = Instant.now(),
         tenant = "DE",
@@ -54,28 +79,4 @@ class OrderRoutingTest : TestBase() {
             ),
         ),
     )
-
-    @Test
-    fun `should accepts order`() {
-        with(engine) {
-            handleRequest(HttpMethod.Post, "/order") {
-                addHeader(HttpHeaders.ContentType, "application/json")
-                setBody(Json.encodeToString(completeOrder()))
-            }.apply {
-                assertThat(response.status()).isEqualTo(HttpStatusCode.Accepted)
-            }
-        }
-    }
-
-    @Test
-    fun `should not process if request body in-complete`() {
-        with(engine) {
-            handleRequest(HttpMethod.Post, "/order") {
-                addHeader(HttpHeaders.ContentType, "application/json")
-                setBody("{}")
-            }.apply {
-                assertThat(response.status()).isEqualTo(HttpStatusCode.BadRequest)
-            }
-        }
-    }
 }

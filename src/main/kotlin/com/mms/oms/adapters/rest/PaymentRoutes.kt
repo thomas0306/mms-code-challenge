@@ -13,7 +13,7 @@ import io.ktor.routing.post
 import io.ktor.routing.routing
 import org.koin.ktor.ext.inject
 
-private const val PAYMENT_ENDPOINT = "/payment"
+const val PAYMENT_ENDPOINT = "/payment"
 
 fun Application.configurePaymentRouting() {
 

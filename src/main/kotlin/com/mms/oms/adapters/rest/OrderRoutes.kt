@@ -15,7 +15,7 @@ import io.ktor.routing.post
 import io.ktor.routing.routing
 import org.koin.ktor.ext.inject
 
-private const val ORDER_ENDPOINT = "/order"
+const val ORDER_ENDPOINT = "/order"
 
 fun Application.configureOrderRouting() {
 

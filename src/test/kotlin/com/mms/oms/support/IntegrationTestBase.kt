@@ -4,11 +4,11 @@ import com.typesafe.config.ConfigFactory
 import io.ktor.config.HoconApplicationConfig
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.createTestEnvironment
-import org.junit.AfterClass
+import io.ktor.util.InternalAPI
 import org.junit.BeforeClass
 import org.slf4j.LoggerFactory
 
-open class TestBase {
+open class IntegrationTestBase {
     companion object {
         private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -30,21 +30,16 @@ open class TestBase {
 
         val database = InMemoryDatabase(config)
 
+        @OptIn(InternalAPI::class)
         @BeforeClass
         @JvmStatic
         fun setup() {
-            logger.debug("Starting application with config ....")
-            inMemoryDatabase.start()
-            inMemoryKafka.start()
-            engine.start()
-        }
-
-        @AfterClass
-        @JvmStatic
-        fun teardown() {
-            inMemoryDatabase.stop()
-            inMemoryKafka.stop()
-            engine.stop(5000, 5000)
+            if (engine.application.isEmpty) {
+                logger.debug("Starting application for test")
+                inMemoryDatabase.start()
+                inMemoryKafka.start()
+                engine.start()
+            }
         }
     }
 }
