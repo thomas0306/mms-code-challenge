@@ -26,7 +26,7 @@ fun Application.configureKafka() {
             val partition = it.property("partition").getString().toInt()
             listOf(topicName, "$topicName-dlt").forEach {
                 if (topicName !in existingTopics) {
-                    environment.log.info("Attempting to create missing topic [$topicName] in LOCAL environment")
+                    environment.log.info("Attempting to create missing topic [$it] in LOCAL environment")
                     val topicConfig = NewTopic(
                         it,
                         partition,
