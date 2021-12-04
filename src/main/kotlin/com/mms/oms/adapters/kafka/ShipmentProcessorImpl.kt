@@ -30,7 +30,7 @@ class ShipmentProcessorImpl : KafkaProcessor<String, String>, KoinComponent {
             else -> logger.error("Shipment status [$status] not implemented")
         }
 
-        logger.info("Processed order [${record.key()}]")
+        logger.info("Processed shipment [${record.key()}]")
     }
 
     override suspend fun recover(record: ConsumerRecord<String, String>) {

@@ -4,6 +4,7 @@ import com.mms.oms.adapters.rest.configureOrderRouting
 import com.mms.oms.adapters.rest.configurePaymentRouting
 import com.mms.oms.config.configureDatabase
 import com.mms.oms.config.configureDependencyInjection
+import com.mms.oms.config.configureStatusPage
 import com.mms.oms.config.kafka.configureKafka
 import com.mms.oms.config.serialization.configureSerialization
 import com.mms.oms.plugins.configureMonitoring
@@ -18,6 +19,7 @@ fun Application.module(testing: Boolean = false) {
     configureMonitoring()
     configureDatabase()
     configureKafka()
+    configureStatusPage()
 
     // Functional
     configureOrderRouting()

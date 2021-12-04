@@ -10,4 +10,6 @@
     <logger name="com.mms" level="DEBUG"/>
     <logger name="org.eclipse.jetty" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
+    <logger nane="org.apache.kafka" level="OFF"/>
+    <logger name="kafka" level="OFF"/>
 </configuration>

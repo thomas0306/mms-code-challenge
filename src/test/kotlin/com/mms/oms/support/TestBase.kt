@@ -8,7 +8,7 @@ import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.slf4j.LoggerFactory
 
-open class BaseTest {
+open class TestBase {
     companion object {
         private val logger = LoggerFactory.getLogger(javaClass)
 
