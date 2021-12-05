@@ -55,6 +55,7 @@ class ShipmentServiceImpl : ShipmentService, KoinComponent {
             it[updatedAt] = shipment.updatedAt
         }
 
+        // TODO handle multiple shipment for single order?
         markOrderAsInFulfillment(shipment)
 
         return@newSuspendedTransaction
