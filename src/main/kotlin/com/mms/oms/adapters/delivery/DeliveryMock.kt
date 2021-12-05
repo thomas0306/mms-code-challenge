@@ -12,6 +12,7 @@ import org.koin.core.component.inject
 import org.quartz.Job
 import org.quartz.JobExecutionContext
 import org.slf4j.LoggerFactory
+import java.time.Instant
 
 @Scheduled(cron = "0/10 * * ? * * *", name = "delivery-mock")
 class DeliveryMock : Job, KoinComponent {
@@ -28,7 +29,10 @@ class DeliveryMock : Job, KoinComponent {
             ShipmentRepository.status eq ShipmentStatus.NOTIFIED
         }.forEach {
             val shipment = ShipmentMapper.toDomain(it)
-            val shipmentUpdate = shipment.copy(status = getRandomEndStatus())
+            val shipmentUpdate = shipment.copy(
+                status = getRandomEndStatus(),
+                actualDeliveryAt = Instant.now(),
+            )
             logger.info(
                 "Updating shipment [$shipment.id] for order [${shipment.orderId}] " +
                     "with status [${shipment.status} -> ${shipmentUpdate.status}]"
