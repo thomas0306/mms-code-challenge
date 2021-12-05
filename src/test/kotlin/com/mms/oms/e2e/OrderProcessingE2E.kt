@@ -66,7 +66,7 @@ class OrderProcessingE2E : IntegrationTestBase() {
             emailAddress = "FirstName.LastName@domain.com",
             addresses = listOf(
                 Address(
-                    role = listOf(AddressRole.DELIVERY, AddressRole.BILLING),
+                    role = setOf(AddressRole.DELIVERY, AddressRole.BILLING),
                     street = "Street",
                     streetNumber = "1",
                     zipCode = "81827",
