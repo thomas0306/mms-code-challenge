@@ -24,7 +24,6 @@ object Retry {
         repeat(maxAttempt) {
             try {
                 block()
-                logger.debug("Attempt [${it + 1}/$maxAttempt] succeed, exiting")
                 return@supervisorScope
             } catch (e: Exception) {
                 exceptionCaught = e
