@@ -15,4 +15,6 @@ data class Cart(
     val shippingPrice: BigDecimal,
 
     val items: List<Item> = listOf(),
-)
+) {
+
+}

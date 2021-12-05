@@ -24,7 +24,7 @@ import org.koin.ktor.ext.Koin
 fun Application.configureDependencyInjection() {
 
     val kafkaModules = module {
-        single { buildProducer<String, String>(environment) as KafkaProducer<String, String> }
+        single<KafkaProducer<String, String>> { buildProducer(environment) }
     }
 
     val orderModules = module(createdAtStart = true) {

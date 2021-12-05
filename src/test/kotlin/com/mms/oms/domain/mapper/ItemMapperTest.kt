@@ -18,7 +18,7 @@ class ItemMapperTest {
         )
 
         // when
-        val domainItem = ItemMapper.toDomainItem(item, Instant.now())
+        val domainItem = ItemMapper.toDomain(item, Instant.now())
 
         // then
         SoftAssertions.assertSoftly {

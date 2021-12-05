@@ -10,6 +10,7 @@ private val DEFAULT_BACKOFF_POLICY = ExponentialBackoff(500, 2, 10000, 0.1)
 object Retry {
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    @Throws(RetryExhaustedException::class, RetryExemptedException::class)
     suspend fun withRetry(
         maxAttempt: Int = 5,
         backoffPolicy: ExponentialBackoff = DEFAULT_BACKOFF_POLICY,
@@ -34,6 +35,7 @@ object Retry {
                     if (recover != null) {
                         logger.error("${e::class.simpleName} exempted from retry, attempt recovery", e)
                         recover()
+                        return@withRetry
                     }
 
                     throw RetryExemptedException("${e::class.simpleName} exempted from retry", e)
@@ -47,5 +49,6 @@ object Retry {
 
         logger.error("Retry exhausted, attempt recovery", exceptionCaught)
         recover()
+        return
     }
 }

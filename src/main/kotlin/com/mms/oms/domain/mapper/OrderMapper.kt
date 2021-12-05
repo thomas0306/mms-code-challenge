@@ -15,7 +15,7 @@ object OrderMapper {
         status = OrderStatus.CREATED,
         paymentStatus = PaymentStatus.AWAIT_PAYMENT_INFO,
         createdAt = order.orderDate,
-        cart = CartMapper.toDomainCart(order.cart, order.orderDate)
+        cart = CartMapper.toDomain(order.cart, order.orderDate)
     )
 
     fun toDomain(resultRow: ResultRow) = DomainOrder(
