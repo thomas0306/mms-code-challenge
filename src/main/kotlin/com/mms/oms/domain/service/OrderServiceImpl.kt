@@ -7,10 +7,13 @@ import com.mms.oms.adapters.repository.CustomerDataRepository
 import com.mms.oms.adapters.repository.ItemRepository
 import com.mms.oms.adapters.repository.OrderCustomerDataRepository
 import com.mms.oms.adapters.repository.OrderRepository
+import com.mms.oms.domain.exception.OrderNotFoundException
+import com.mms.oms.domain.mapper.OrderMapper
 import com.mms.oms.domain.model.Cart
 import com.mms.oms.domain.model.CustomerData
 import com.mms.oms.domain.model.Order
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
@@ -26,6 +29,14 @@ class OrderServiceImpl : OrderService, KoinComponent {
     override suspend fun submitOrder(order: Order) {
         orderProducer.produce(order)
     }
+
+    override suspend fun getOrder(orderId: UUID): Order =
+        OrderRepository
+            .select {
+                OrderRepository.id eq orderId
+            }.singleOrNull()?.let {
+                OrderMapper.toDomain(it)
+            } ?: throw OrderNotFoundException(orderId)
 
     override suspend fun persistOrder(order: Order) = newSuspendedTransaction {
         OrderRepository.insert {

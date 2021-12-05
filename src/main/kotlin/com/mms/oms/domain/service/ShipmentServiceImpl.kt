@@ -1,9 +1,11 @@
 package com.mms.oms.domain.service
 
+import com.mms.oms.adapters.kafka.OrderProducerImpl
 import com.mms.oms.adapters.kafka.ShipmentProducerImpl
 import com.mms.oms.adapters.repository.ShipmentRepository
 import com.mms.oms.config.extension.randomNumberSuffix
 import com.mms.oms.domain.model.Order
+import com.mms.oms.domain.model.OrderStatus
 import com.mms.oms.domain.model.Shipment
 import com.mms.oms.domain.model.ShipmentStatus
 import org.jetbrains.exposed.sql.insert
@@ -18,6 +20,8 @@ import java.time.ZoneOffset
 class ShipmentServiceImpl : ShipmentService, KoinComponent {
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    private val orderService: OrderService by inject()
+    private val orderProducer: OrderProducerImpl by inject()
     private val shipmentProducer: ShipmentProducerImpl by inject()
 
     override suspend fun createShipment(order: Order) {
@@ -51,7 +55,18 @@ class ShipmentServiceImpl : ShipmentService, KoinComponent {
             it[updatedAt] = shipment.updatedAt
         }
 
+        markOrderAsInFulfillment(shipment)
+
         return@newSuspendedTransaction
+    }
+
+    private suspend fun markOrderAsInFulfillment(shipment: Shipment) {
+        val order = orderService.getOrder(shipment.orderId)
+        val updatedOrder = order.copy(
+            status = OrderStatus.IN_FULFILLMENT
+        )
+
+        orderProducer.produce(updatedOrder)
     }
 
     override suspend fun updateShipment(shipment: Shipment) = newSuspendedTransaction {

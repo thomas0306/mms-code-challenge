@@ -5,6 +5,7 @@ import java.util.UUID
 
 interface OrderService {
     suspend fun submitOrder(order: Order)
+    suspend fun getOrder(orderId: UUID): Order
     suspend fun persistOrder(order: Order)
     suspend fun updateOrder(order: Order)
     suspend fun maybeCloseOrder(orderId: UUID)
