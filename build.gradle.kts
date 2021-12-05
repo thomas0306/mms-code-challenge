@@ -67,4 +67,7 @@ dependencies {
     // Testing
     testImplementation("org.assertj:assertj-core:3.21.0")
     testImplementation("io.mockk:mockk:1.12.1")
+
+    // Other
+    implementation("org.valiktor:valiktor-core:0.12.0")
 }

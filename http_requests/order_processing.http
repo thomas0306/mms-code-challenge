@@ -17,6 +17,16 @@ Content-Type: application/json
         "zipCode": "81827",
         "city": "Munich",
         "country": "Germany"
+      },
+      {
+        "role": [
+          "BILLING"
+        ],
+        "street": "Adlerstr.",
+        "streetNumber": "1",
+        "zipCode": "81827",
+        "city": "Munich",
+        "country": "Germany"
       }
     ]
   },
