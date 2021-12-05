@@ -7,7 +7,7 @@ import org.valiktor.validate
 
 @Serializable
 data class Address(
-    val role: Set<AddressRole> = setOf(AddressRole.DELIVERY, AddressRole.BILLING),
+    val roles: Set<AddressRole> = setOf(AddressRole.DELIVERY, AddressRole.BILLING),
     val street: String,
     val streetNumber: String,
     val zipCode: String,
@@ -16,7 +16,7 @@ data class Address(
 ) {
     init {
         validate(this) {
-            validate(Address::role).isNotEmpty().hasSize(1, 2)
+            validate(Address::roles).isNotEmpty().hasSize(1, 2)
             validate(Address::street).hasSize(2, 50)
             validate(Address::streetNumber).hasSize(1, 10)
             validate(Address::zipCode).hasSize(5, 15)

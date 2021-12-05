@@ -12,7 +12,7 @@ import org.valiktor.validate
 
 fun <E> Validator<E>.Property<Iterable<Address>?>.hasValidAddressRoles() =
     this.validate(ContainsAll(listOf(AddressRole.DELIVERY, AddressRole.BILLING))) { addresses ->
-        val roles = addresses?.map { it.role }?.flatten() ?: listOf()
+        val roles = addresses?.map { it.roles }?.flatten() ?: listOf()
         !(roles.size != 2 || roles.toSet().size < roles.size)
     }
 

@@ -1,9 +1,14 @@
 package com.mms.oms.domain.service
 
 import com.mms.oms.adapters.kafka.OrderProducerImpl
+import com.mms.oms.adapters.repository.AddressRepository
 import com.mms.oms.adapters.repository.CartRepository
+import com.mms.oms.adapters.repository.CustomerDataRepository
 import com.mms.oms.adapters.repository.ItemRepository
+import com.mms.oms.adapters.repository.OrderCustomerDataRepository
 import com.mms.oms.adapters.repository.OrderRepository
+import com.mms.oms.domain.model.Cart
+import com.mms.oms.domain.model.CustomerData
 import com.mms.oms.domain.model.Order
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -32,6 +37,15 @@ class OrderServiceImpl : OrderService, KoinComponent {
             it[updatedAt] = order.updatedAt
         }
 
+        order.cart?.let { insertCartData(order, it) }
+        order.customerData?.let { insertCustomerData(order, it) }
+
+        paymentService.maybeConcludesPayment(order.id)
+
+        return@newSuspendedTransaction
+    }
+
+    private fun insertCartData(order: Order, cart: Cart) {
         order.cart?.also { c ->
             CartRepository.insert {
                 it[id] = c.id
@@ -53,13 +67,48 @@ class OrderServiceImpl : OrderService, KoinComponent {
                 it[quantity] = i.quantity
                 it[createdAt] = i.createdAt
                 it[updatedAt] = i.updatedAt
-                it[cartId] = order.cart.id
+                it[cartId] = cart.id
+            }
+        }
+    }
+
+    private fun insertCustomerData(
+        order: Order,
+        customerData: CustomerData
+    ) {
+        order.customerData?.also { cd ->
+            CustomerDataRepository.insert {
+                it[id] = cd.id
+                it[firstName] = cd.firstName
+                it[lastName] = cd.lastName
+                it[phoneNumber] = cd.phoneNumber
+                it[emailAddress] = cd.emailAddress
+                it[createdAt] = cd.createdAt
+            }
+
+            OrderCustomerDataRepository.insert {
+                it[id] = UUID.randomUUID()
+                it[orderId] = order.id
+                it[customerDataId] = cd.id
+                it[createdAt] = cd.createdAt
             }
         }
 
-        paymentService.maybeConcludesPayment(order.id)
-
-        return@newSuspendedTransaction
+        order.customerData?.addresses?.forEach { a ->
+            AddressRepository.insert { it ->
+                it[id] = a.id
+                it[roles] = Array(a.roles.size) { idx ->
+                    a.roles.toList()[idx]
+                }
+                it[street] = a.street
+                it[streetNumber] = a.streetNumber
+                it[zipCode] = a.zipCode
+                it[city] = a.city
+                it[country] = a.country
+                it[createdAt] = a.createdAt
+                it[customerDataId] = customerData.id
+            }
+        }
     }
 
     override suspend fun updateOrder(

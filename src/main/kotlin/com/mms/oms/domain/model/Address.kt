@@ -7,16 +7,17 @@ import java.time.Instant
 import java.util.UUID
 
 @Serializable
-data class Order(
+data class Address(
     @Serializable(with = UUIDSerializer::class)
     val id: UUID = UUID.randomUUID(),
     @Serializable(with = InstantSerializer::class)
     val createdAt: Instant,
     @Serializable(with = InstantSerializer::class)
     val updatedAt: Instant = Instant.now(),
-    val tenant: String,
-    val status: OrderStatus,
-    val paymentStatus: PaymentStatus,
-    val cart: Cart?,
-    val customerData: CustomerData?,
+    val roles: Set<AddressRole> = setOf(AddressRole.DELIVERY, AddressRole.BILLING),
+    val street: String,
+    val streetNumber: String,
+    val zipCode: String,
+    val city: String,
+    val country: String,
 )

@@ -9,7 +9,7 @@ Content-Type: application/json
     "emailAddress": "thomas.lee@gmail.com",
     "addresses": [
       {
-        "role": [
+        "roles": [
           "DELIVERY"
         ],
         "street": "Adlerstr.",
@@ -19,7 +19,7 @@ Content-Type: application/json
         "country": "Germany"
       },
       {
-        "role": [
+        "roles": [
           "BILLING"
         ],
         "street": "Adlerstr.",

@@ -1,6 +1,7 @@
 package com.mms.oms.config.retry
 
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.supervisorScope
 import org.apache.kafka.common.utils.ExponentialBackoff
 import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
@@ -17,25 +18,28 @@ object Retry {
         onExceptions: Set<KClass<out Exception>> = setOf(),
         recover: (suspend () -> Unit)? = null,
         block: suspend () -> Unit,
-    ) {
+    ) = supervisorScope {
         val isAlwaysRetry = onExceptions.isEmpty()
         var exceptionCaught: Exception? = null
         repeat(maxAttempt) {
             try {
                 block()
-                return@withRetry
+                logger.debug("Attempt [${it + 1}/$maxAttempt] succeed, exiting")
+                return@supervisorScope
             } catch (e: Exception) {
                 exceptionCaught = e
                 if (isAlwaysRetry || e::class in onExceptions) {
-                    logger.debug("Attempt [${it + 1}/$maxAttempt] failed, proceed to retry")
                     if ((it + 1) < maxAttempt) {
+                        logger.debug("Attempt [${it + 1}/$maxAttempt] failed, proceed to retry")
                         delay(backoffPolicy.backoff(it.toLong()))
+                    } else {
+                        logger.debug("Attempt [${it + 1}/$maxAttempt] failed, stop retrying")
                     }
                 } else {
                     if (recover != null) {
                         logger.error("${e::class.simpleName} exempted from retry, attempt recovery", e)
                         recover()
-                        return@withRetry
+                        return@supervisorScope
                     }
 
                     throw RetryExemptedException("${e::class.simpleName} exempted from retry", e)
@@ -49,6 +53,6 @@ object Retry {
 
         logger.error("Retry exhausted, attempt recovery", exceptionCaught)
         recover()
-        return
+        return@supervisorScope
     }
 }

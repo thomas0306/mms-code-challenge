@@ -56,7 +56,7 @@ class OrderRoutesIT : IntegrationTestBase() {
             emailAddress = "FirstName.LastName@domain.com",
             addresses = listOf(
                 Address(
-                    role = setOf(DELIVERY, BILLING),
+                    roles = setOf(DELIVERY, BILLING),
                     street = "Street",
                     streetNumber = "1",
                     zipCode = "81827",

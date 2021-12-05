@@ -50,8 +50,13 @@ class Consumer<K, V>(
             runBlocking(dispatcher) {
                 records.map {
                     launch {
-                        logger.debug("topic [${it.topic()}], partition [${it.partition()}], offset [${it.offset()}], key [${it.key()}], value [${it.value()}]")
-
+                        logger.debug(
+                            "topic [${it.topic()}], " +
+                                "partition [${it.partition()}], " +
+                                "offset [${it.offset()}], " +
+                                "key [${it.key()}], " +
+                                "value [${it.value()}]"
+                        )
                         processor.run {
                             withRetry(recover = { recover(it) }) { process(it) }
                         }
