@@ -4,6 +4,7 @@ import com.mms.oms.config.kafka.KafkaProcessor
 import com.mms.oms.domain.model.Order
 import com.mms.oms.domain.model.OrderStatus.CLOSED
 import com.mms.oms.domain.model.OrderStatus.CREATED
+import com.mms.oms.domain.model.OrderStatus.FULFILLMENT_FAILED
 import com.mms.oms.domain.model.OrderStatus.IN_FULFILLMENT
 import com.mms.oms.domain.model.OrderStatus.PAID
 import com.mms.oms.domain.service.OrderService
@@ -30,7 +31,7 @@ class OrderProcessorImpl : KafkaProcessor<String, String>, KoinComponent {
                 orderService.updateOrder(order)
                 shipmentService.createShipment(order)
             }
-            IN_FULFILLMENT, CLOSED -> orderService.updateOrder(order)
+            IN_FULFILLMENT, CLOSED, FULFILLMENT_FAILED -> orderService.updateOrder(order)
         }
 
         logger.info("Processed order [${record.key()}]")

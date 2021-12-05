@@ -4,5 +4,6 @@ enum class ShipmentStatus {
     NOTIFIED,
     PICKED,
     IN_TRANSIT,
-    DELIVERED
+    DELIVERED,
+    DELIVERY_FAILED,
 }

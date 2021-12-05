@@ -41,6 +41,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
@@ -70,4 +71,5 @@ dependencies {
 
     // Other
     implementation("org.valiktor:valiktor-core:0.12.0")
+    implementation("org.quartz-scheduler:quartz:2.3.2")
 }

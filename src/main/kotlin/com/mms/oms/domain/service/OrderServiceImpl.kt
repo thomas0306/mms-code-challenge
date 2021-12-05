@@ -139,8 +139,4 @@ class OrderServiceImpl : OrderService, KoinComponent {
 
         return@newSuspendedTransaction
     }
-
-    override suspend fun maybeCloseOrder(orderId: UUID) {
-        TODO("maybeCloseOrder not yet implemented")
-    }
 }

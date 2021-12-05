@@ -4,12 +4,14 @@ import com.mms.oms.adapters.kafka.OrderProducerImpl
 import com.mms.oms.adapters.kafka.ShipmentProducerImpl
 import com.mms.oms.adapters.repository.ShipmentRepository
 import com.mms.oms.config.extension.randomNumberSuffix
+import com.mms.oms.domain.mapper.ShipmentStatusMapper
 import com.mms.oms.domain.model.Order
 import com.mms.oms.domain.model.OrderStatus
 import com.mms.oms.domain.model.Shipment
 import com.mms.oms.domain.model.ShipmentStatus
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.update
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
@@ -71,6 +73,21 @@ class ShipmentServiceImpl : ShipmentService, KoinComponent {
     }
 
     override suspend fun updateShipment(shipment: Shipment) = newSuspendedTransaction {
-        TODO("updateShipment not implemented")
+        ShipmentRepository.update({ ShipmentRepository.trackingNumber eq shipment.trackingNumber }) {
+            shipment.status.apply {
+                it[status] = shipment.status
+            }
+
+            it[updatedAt] = Instant.now()
+        }
+
+        val order = orderService.getOrder(shipment.orderId)
+        val updatedOrder = order.copy(
+            status = ShipmentStatusMapper.toOrderStatus(shipment.status)
+        )
+
+        orderProducer.produce(updatedOrder)
+
+        return@newSuspendedTransaction
     }
 }

@@ -5,4 +5,5 @@ enum class OrderStatus {
     PAID,
     IN_FULFILLMENT,
     CLOSED,
+    FULFILLMENT_FAILED,
 }
