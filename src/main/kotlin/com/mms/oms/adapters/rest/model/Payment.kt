@@ -24,7 +24,7 @@ data class Payment(
     init {
         validate(this) {
             validate(Payment::transactionId).isNotEmpty().hasSize(5, 30)
-            validate(Payment::merchantReference).isNotEmpty().hasSize(5, 30)
+            validate(Payment::merchantReference).isNotEmpty().hasSize(5, 36)
             validate(Payment::pspReference).isNotEmpty().hasSize(6, 16)
             validate(Payment::currency).isNotEmpty().hasSize(3, 3)
         }
