@@ -14,6 +14,7 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 
 fun Application.configureScheduler() {
+    // TODO Configure JobStoreTX for cluster mode
     val schedulerFactory = StdSchedulerFactory()
     val scheduler = schedulerFactory.scheduler
     scheduler.start()
