@@ -5,16 +5,19 @@ metadata:
   labels:
     app: order-service
 spec:
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 50%
   selector:
     matchLabels:
       app: order-service
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
         app: order-service
     spec:
-
       containers:
         - name: order-service
           image: order-service:latest
@@ -29,11 +32,11 @@ spec:
             - name: DB_PASSWORD
               value: "password"
             - name: KAFKA_BROKER
-              value: "$(KAFKA_SERVICE_HOST):$(KAFKA_SERVICE_PORT_9092)"
+              value: "kafka:9092"
           resources:
             requests:
-              memory: "256Mi"
+              memory: "512Mi"
               cpu: "500m"
             limits:
-              memory: "1024Mi"
-              cpu: "1000m"
+              memory: "2048Mi"
+              cpu: "2000m"
