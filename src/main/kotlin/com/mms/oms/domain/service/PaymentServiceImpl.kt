@@ -11,6 +11,7 @@ import com.mms.oms.domain.model.Payment
 import com.mms.oms.domain.model.PaymentStatus
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.not
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.koin.core.component.KoinComponent
@@ -46,6 +47,16 @@ class PaymentServiceImpl : PaymentService, KoinComponent {
     }
 
     override suspend fun maybeConcludesPayment(orderId: UUID) {
+        OrderRepository.select {
+            OrderRepository.id eq orderId and (
+                not(
+                    OrderRepository.status
+                        inList
+                            listOf(OrderStatus.IN_FULFILLMENT, OrderStatus.FULFILLMENT_FAILED, OrderStatus.CLOSED)
+                )
+                )
+        }.firstOrNull() ?: return
+
         CartRepository.select {
             CartRepository.orderId eq orderId
         }.singleOrNull()?.let {

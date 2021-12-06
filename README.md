@@ -10,7 +10,7 @@
 
 docker build -t order-service .
 
-kubectl apply -f deploy/plan-dev.yaml
+kubectl apply -f deploy/plan-dev.yml
 ```
 
 ## Development tricks
