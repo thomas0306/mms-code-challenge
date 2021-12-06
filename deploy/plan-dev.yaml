@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  labels:
+    app: order-service
+spec:
+  selector:
+    matchLabels:
+      app: order-service
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+
+      containers:
+        - name: order-service
+          image: order-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_URL
+              value: "jdbc:postgresql://$(POSTGRES_SERVICE_HOST):$(POSTGRES_SERVICE_PORT)/oms-db"
+            - name: DB_USER
+              value: "username"
+            - name: DB_PASSWORD
+              value: "password"
+            - name: KAFKA_BROKER
+              value: "$(KAFKA_SERVICE_HOST):$(KAFKA_SERVICE_PORT_9092)"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"

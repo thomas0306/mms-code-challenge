@@ -11,36 +11,36 @@ import org.koin.ktor.ext.get
 
 suspend fun Application.configureKafka() {
 
+    environment.log
     val desiredTopics = environment.config.configList("kafka.topics")
 
-    if (environment.config.property("ktor.environment").getString() == "LOCAL") {
-        val adminClient = AdminClient.create(
-            mapOf(
-                "bootstrap.servers" to environment.config.property("kafka.bootstrap.servers").getList()
-            )
+    val adminClient = AdminClient.create(
+        mapOf(
+            "bootstrap.servers" to environment.config.property("kafka.bootstrap.servers").getList(),
+            "client-id" to environment.config.property("kafka.client.id").getString(),
         )
+    )
 
-        val existingTopics = adminClient.listTopics().names().get()
+    val existingTopics = adminClient.listTopics().names().get()
 
-        desiredTopics.map {
-            launch {
-                val topicName = it.property("name").getString()
-                val replica = it.property("replica").getString().toInt()
-                val partition = it.property("partition").getString().toInt()
-                listOf(topicName, "$topicName-dlt").forEach {
-                    if (topicName !in existingTopics) {
-                        environment.log.info("Attempting to create missing topic [$it] in LOCAL environment")
-                        val topicConfig = NewTopic(
-                            it,
-                            partition,
-                            replica.toShort(),
-                        )
-                        adminClient.createTopics(listOf(topicConfig)).all().get()
-                    }
+    desiredTopics.map {
+        launch {
+            val topicName = it.property("name").getString()
+            val replica = it.property("replica").getString().toInt()
+            val partition = it.property("partition").getString().toInt()
+            listOf(topicName, "$topicName-dlt").forEach {
+                if (it !in existingTopics) {
+                    environment.log.info("Attempting to create missing topic [$it] in LOCAL environment")
+                    val topicConfig = NewTopic(
+                        it,
+                        partition,
+                        replica.toShort(),
+                    )
+                    adminClient.createTopics(listOf(topicConfig)).all().get()
                 }
             }
-        }.joinAll()
-    }
+        }
+    }.joinAll()
 
     desiredTopics.map {
         launch {

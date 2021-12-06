@@ -11,6 +11,7 @@ plugins {
     kotlin("jvm") version "1.6.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.6.0"
     id("org.flywaydb.flyway") version "5.2.4"
+    id("com.bmuschko.docker-remote-api") version "7.1.0"
 }
 
 flyway {
@@ -19,6 +20,11 @@ flyway {
     password = System.getenv("DB_PASSWORD")
     baselineOnMigrate = true
     locations = arrayOf("filesystem:resources/db/migration")
+}
+
+tasks.create("buildImage", com.bmuschko.gradle.docker.tasks.image.DockerBuildImage::class) {
+    inputDir.set(file("./"))
+    images.add("mms/order-service:latest")
 }
 
 group = "com.mms"

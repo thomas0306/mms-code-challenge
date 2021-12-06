@@ -41,6 +41,6 @@ This scenario is meant to test your every capability in programming modern day a
 - DLQs // done
 - Retries // done
 - config by environment // done
-- E2E test with in memory kafka and postgres instance
+- E2E test with in memory kafka and postgres instance // done
 - Swagger generated API class
 - Monitoring metrics
