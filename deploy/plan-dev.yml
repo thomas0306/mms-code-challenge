@@ -1,18 +1,15 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: order-service
   labels:
     app: order-service
 spec:
-  strategy:
-    rollingUpdate:
-      maxUnavailable: 50%
-      maxSurge: 50%
+  serviceName: order-service
   selector:
     matchLabels:
       app: order-service
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -35,8 +32,8 @@ spec:
               value: "kafka:9092"
           resources:
             requests:
-              memory: "512Mi"
+              memory: "256Mi"
               cpu: "500m"
             limits:
-              memory: "2048Mi"
-              cpu: "2000m"
+              memory: "512Mi"
+              cpu: "1000m"

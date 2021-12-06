@@ -69,7 +69,7 @@ class Consumer<K, V>(
                     if (exception != null) {
                         logger.error("Commit failed for offsets [$offsets]", exception)
                     } else {
-                        logger.debug("Offset committed [$offsets]")
+                        logger.trace("Offset committed [$offsets]")
                     }
                 }
             }
@@ -77,23 +77,23 @@ class Consumer<K, V>(
         logger.info("Finish consuming")
     } catch (e: Throwable) {
         when (e) {
-            is WakeupException -> logger.info("Consumer waked up")
+            is WakeupException -> logger.trace("Consumer waked up")
             else -> logger.error("Polling failed", e)
         }
     } finally {
-        logger.info("Commit offset synchronously")
+        logger.trace("Commit offset synchronously")
         consumer.commitSync()
         consumer.close()
         finished.countDown()
-        logger.info("Consumer successfully closed")
+        logger.trace("Consumer successfully closed")
     }
 
     override fun close() {
-        logger.info("Close job...")
+        logger.trace("Close job...")
         closed.set(true)
         consumer.wakeup()
         finished.await(3000, TimeUnit.MILLISECONDS)
-        logger.info("Job is successfully closed")
+        logger.trace("Job is successfully closed")
     }
 }
 

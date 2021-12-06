@@ -23,7 +23,7 @@ class DeliveryMock : Job, KoinComponent {
     private val endStatus = listOf(ShipmentStatus.DELIVERED, ShipmentStatus.DELIVERY_FAILED)
 
     override fun execute(context: JobExecutionContext?) = transaction {
-        logger.info("Delivery Mock wakes")
+        logger.trace("Delivery Mock wakes")
 
         ShipmentRepository.select {
             ShipmentRepository.status eq ShipmentStatus.NOTIFIED
@@ -34,7 +34,7 @@ class DeliveryMock : Job, KoinComponent {
                 actualDeliveryAt = Instant.now(),
             )
             logger.info(
-                "Updating shipment [$shipment.id] for order [${shipment.orderId}] " +
+                "Updating shipment [${shipment.id}] for order [${shipment.orderId}] " +
                     "with status [${shipment.status} -> ${shipmentUpdate.status}]"
             )
 

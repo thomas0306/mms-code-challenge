@@ -15,12 +15,17 @@ import kotlin.reflect.full.hasAnnotation
 
 fun Application.configureScheduler() {
     // TODO Configure JobStoreTX for cluster mode
+    val hostname = System.getenv("HOSTNAME")
+    if ("order-service-0" != hostname) {
+        environment.log.info("This POD [$hostname] will not schedule anything")
+        return
+    }
+
     val schedulerFactory = StdSchedulerFactory()
     val scheduler = schedulerFactory.scheduler
     scheduler.start()
 
     fun createJob(scheduledJob: KClass<out Job>) {
-        environment.log.info("hello")
         if (!scheduledJob.hasAnnotation<Scheduled>()) {
             throw ScheduledAnnotationNotFoundException(scheduledJob)
         }
