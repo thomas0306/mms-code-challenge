@@ -35,13 +35,13 @@ object Retry {
                         logger.debug("Attempt [${it + 1}/$maxAttempt] failed, stop retrying")
                     }
                 } else {
-                    if (recover != null) {
-                        logger.error("${e::class.simpleName} exempted from retry, attempt recovery", e)
-                        recover()
-                        return@supervisorScope
+                    if (recover == null) {
+                        throw RetryExemptedException("${e::class.simpleName} exempted from retry", e)
                     }
 
-                    throw RetryExemptedException("${e::class.simpleName} exempted from retry", e)
+                    logger.error("${e::class.simpleName} exempted from retry, attempt recovery", e)
+                    recover()
+                    return@supervisorScope
                 }
             }
         }

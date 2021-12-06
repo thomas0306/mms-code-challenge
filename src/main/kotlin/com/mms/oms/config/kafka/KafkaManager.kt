@@ -51,7 +51,7 @@ suspend fun Application.configureKafka() {
             install(BackgroundJob.BackgroundJobFeature()) {
                 val processor: KafkaProcessor<String, String> = get(named(processorName))
                 name = "$topicName-consumer"
-                job = buildConsumer<String, String>(
+                job = buildConsumer(
                     environment,
                     topicName,
                     processor,
